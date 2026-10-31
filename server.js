@@ -1,15 +1,12 @@
-require('dotenv').config();
-const express = require('express');
+import 'dotenv/config';
+import app from './app.js';
 
-const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
+const startServer = async () => {
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+  });
+};
 
-app.get('/', (req, res) => {
-  res.send('Books Web Service is running');
-});
-
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+startServer();
