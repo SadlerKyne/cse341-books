@@ -10,3 +10,9 @@ export const getAllBooks = async () => {
     .sort({ id: 1 })
     .toArray();
 };
+
+export const getBookById = async (bookId) => {
+  return getDb()
+    .collection('books')
+    .findOne({ id: bookId }, { projection: bookProjection });
+};
