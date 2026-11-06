@@ -7,6 +7,9 @@ let db;
 // index already exists.
 const createIndexes = async (database) => {
   await database.collection('authors').createIndex({ id: 1 }, { unique: true });
+  await database.collection('books').createIndex({ id: 1 }, { unique: true });
+  // Speeds up the "does this author have books?" check before deleting an author.
+  await database.collection('books').createIndex({ authorId: 1 });
 };
 
 export const connectToDb = async () => {

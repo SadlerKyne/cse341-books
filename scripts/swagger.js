@@ -12,6 +12,15 @@ const spec = swaggerJsdoc({
     },
     components: {
       schemas: {
+        Book: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', example: 'b1' },
+            authorId: { type: 'string', example: 'a1' },
+            title: { type: 'string', example: 'Patterns of Light' },
+            publicationDate: { type: 'string', format: 'date', example: '2021-08-17' },
+          },
+        },
         Author: {
           type: 'object',
           properties: {

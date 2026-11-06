@@ -7,6 +7,28 @@
   },
   "components": {
     "schemas": {
+      "Book": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "b1"
+          },
+          "authorId": {
+            "type": "string",
+            "example": "a1"
+          },
+          "title": {
+            "type": "string",
+            "example": "Patterns of Light"
+          },
+          "publicationDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2021-08-17"
+          }
+        }
+      },
       "Author": {
         "type": "object",
         "properties": {
@@ -35,6 +57,302 @@
     }
   },
   "paths": {
+    "/books": {
+      "get": {
+        "summary": "Get all books",
+        "tags": [
+          "Books"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of books",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a book",
+        "tags": [
+          "Books"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "authorId",
+                  "title",
+                  "publicationDate"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "authorId": {
+                    "type": "string",
+                    "description": "Must match the id of an existing author"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "publicationDate": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              },
+              "example": {
+                "id": "b4",
+                "authorId": "a1",
+                "title": "Example Book Title",
+                "publicationDate": "2026-01-15"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Book created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid book fields, invalid JSON, authorId does not match an author, or the id already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/books/{id}": {
+      "get": {
+        "summary": "Get a book by id",
+        "tags": [
+          "Books"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "b1",
+            "description": "The book's custom id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The matching book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Book not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a book by id",
+        "tags": [
+          "Books"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "b1",
+            "description": "The book's custom id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "authorId",
+                  "title",
+                  "publicationDate"
+                ],
+                "properties": {
+                  "authorId": {
+                    "type": "string",
+                    "description": "Must match the id of an existing author"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "publicationDate": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              },
+              "example": {
+                "authorId": "a2",
+                "title": "Updated Book Title",
+                "publicationDate": "2026-02-20"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid book fields, invalid JSON, or authorId does not match an author",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Book not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a book by id",
+        "tags": [
+          "Books"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The book's custom id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Book deleted"
+          },
+          "404": {
+            "description": "Book not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/authors": {
       "get": {
         "summary": "Get all authors",
