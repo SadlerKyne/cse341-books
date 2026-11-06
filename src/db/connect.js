@@ -2,6 +2,13 @@ import { MongoClient } from 'mongodb';
 
 let db;
 
+// The unique index makes MongoDB reject duplicate custom ids, even when two
+// create requests arrive at the same time. createIndex does nothing if the
+// index already exists.
+const createIndexes = async (database) => {
+  await database.collection('authors').createIndex({ id: 1 }, { unique: true });
+};
+
 export const connectToDb = async () => {
   if (db) {
     return db;
@@ -17,6 +24,7 @@ export const connectToDb = async () => {
   const client = new MongoClient(uri);
   await client.connect();
   db = client.db(dbName);
+  await createIndexes(db);
   console.log(`Connected to MongoDB database: ${dbName}`);
   return db;
 };
